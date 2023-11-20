@@ -11,13 +11,16 @@
 {% endblock %}
 
 {% block content %}
-  <ul>
+<ul class="flex-container">
     {% for actor in actori %}
-      <li>
-        <img src="{%static "theater/images/coding.jpg" %}" alt="Description of the image" />
-
-        {{ actor.0 }} {{ actor.1 }}
-      </li>
+    <li class="flex-item">
+      <img src="{% static "theater/images/coding.jpg" %}" alt="Description of the image" />
+      <div class="inner-container">
+        <h1>{{actor.0}} {{ actor.1 }}</h1>
+        <h2>Role</h2>
+        <h3>Additional Info</h3>
+      </div>
+    </li>
     {% endfor %}
   </ul>
 {% endblock %}
