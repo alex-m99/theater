@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+
+{% block title %}
+    Test
+{% endblock title %}
+
+{% block content %}
+    AAAAAAA
+   
+        {% for angajat in  angajati %}
+        <ul>
+          <li> {{ angajat.1 }} </li>  
+        </ul>
+        {% endfor %}
+    
+
+{% endblock content %}
+
+

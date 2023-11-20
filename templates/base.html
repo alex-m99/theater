@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}{% endblock title %}</title>
+    {% comment %} <link rel="stylesheet" href="{% static 'app.css' %}"> {% endcomment %}
+    {% comment %} {% block css_files %}{% endblock css_files %} {% endcomment %}
+</head>
+<body>
+    {% comment %} <header id="main-navigation">
+        <h1><a href="{% url "starting-page" %}">Alex' Blog</a></h1>
+        <nav>
+          <a href="{% url "posts-page" %}">All Posts</a>
+        </nav>
+      </header> {% endcomment %}
+      
+    {% block content %}
+    {% endblock content %}
+</body>
+</html>
