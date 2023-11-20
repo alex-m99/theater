@@ -1,3 +1,5 @@
+{% load static %}
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -5,15 +7,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}{% endblock title %}</title>
     {% comment %} <link rel="stylesheet" href="{% static 'app.css' %}"> {% endcomment %}
-    {% comment %} {% block css_files %}{% endblock css_files %} {% endcomment %}
+    {% block css_files %}{% endblock css_files %}
 </head>
 <body>
-    {% comment %} <header id="main-navigation">
-        <h1><a href="{% url "starting-page" %}">Alex' Blog</a></h1>
+   <header id="main-navigation">
+        {% comment %} <h1><a href="{% url "starting-page" %}">Teatru</a></h1> {% endcomment %}
         <nav>
-          <a href="{% url "posts-page" %}">All Posts</a>
+          <a href="{% url "actors-page" %}">Acasă </a>
+          <a href="{% url "actors-page" %}">Actori</a>
+          <a href="{% url "actors-page" %}">Echipa tehnică</a>
         </nav>
-      </header> {% endcomment %}
+      </header> 
       
     {% block content %}
     {% endblock content %}

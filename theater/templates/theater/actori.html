@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+  Actori
+{% endblock %}
+
+{% block css_files %}
+  <link rel="stylesheet" href="{% static 'theater/app.css' %}" />
+  {% comment %} <link rel="stylesheet" href="{% static 'blog/index.css' %}" /> {% endcomment %}
+{% endblock %}
+
+{% block content %}
+  <ul>
+    {% for actor in actori %}
+      <li>
+        <img src="{%static "theater/images/coding.jpg" %}" alt="Description of the image" />
+
+        {{ actor.0 }} {{ actor.1 }}
+      </li>
+    {% endfor %}
+  </ul>
+{% endblock %}

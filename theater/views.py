@@ -5,8 +5,12 @@ from django.db import connection
 
 def get_actors(request):
     with connection.cursor() as cursor:
-        cursor.execute("SELECT * FROM Angajati")
-        angajati = cursor.fetchall()
-        return render(request, "theater/index.html", {
-            "angajati": angajati
+        cursor.execute("""SELECT A.Nume,
+                                 A.Prenume
+                           FROM Angajati A
+                           INNER JOIN AngajatiActori AA
+                           ON A.AngajatID = AA.AngajatID""")
+        actori = cursor.fetchall()
+        return render(request, "theater/actori.html", {
+            "actori": actori
         })
