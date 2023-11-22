@@ -62,11 +62,10 @@ ul.flex-container {
   margin: 0 auto;
   margin-left: 500px;
 }
-
 /* Individual list item with flex layout */
 .flex-item {
   display: flex;
-  align-items: center; /* Align items vertically in the center */
+  align-items: center;
   border: 1px solid #131212; /* Optional: Add a border for visual clarity */
   background-color:#131212;
   padding: 10px;
