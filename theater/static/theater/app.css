@@ -60,7 +60,7 @@ ul.flex-container {
   max-width: 500px;
   border: none;
   margin: 0 auto;
-  margin-left: 500px;
+  margin-left: 200px;
 }
 /* Individual list item with flex layout */
 .flex-item {

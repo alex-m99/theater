@@ -12,15 +12,15 @@
 
 {% block content %}
 <ul class="flex-container">
-    {% for actor in actori %}
+    {% for actor in actori %} 
     <li class="flex-item">
       <img src="{% static "theater/images/coding.jpg" %}" alt="Description of the image" />
       <div class="inner-container">
         <h1>{{actor.0}} {{ actor.1 }}</h1>
-        <h2>Role</h2>
+        <h2>Roluri: {{actor.2}}</h2>
         <h3>Additional Info</h3>
       </div>
     </li>
-    {% endfor %}
+    {% endfor %} 
   </ul>
 {% endblock %}
