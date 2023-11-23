@@ -12,11 +12,13 @@
 <body>
    <header id="main-navigation">
         {% comment %} <h1><a href="{% url "starting-page" %}">Teatru</a></h1> {% endcomment %}
+        <img src="{% static "theater/images/aaa.png" %}" alt= "Description of the image" style="height: 70px; margin-right:auto; padding:30px"/>
         <nav>
           <a href="{% url "actors-page" %}">Acasă </a>
           <a href="{% url "actors-page" %}">Spectacole </a>
           <a href="{% url "actors-page" %}">Actori</a>
           <a href="{% url "actors-page" %}">Echipa tehnică</a>
+          {% comment %} <img src="{% static "theater/images/aaa.png" %}" alt= "Description of the image" /> {% endcomment %}
         </nav>
       </header> 
       

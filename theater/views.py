@@ -5,19 +5,33 @@ from django.db import connection
 
 def get_actors(request):
     with connection.cursor() as cursor:
+        # cursor.execute("""SELECT 
+        #                     A.Nume, 
+        #                     A.Prenume, 
+        #                     STUFF((
+        #                         SELECT ', ' + AR.Rol
+        #                         FROM AngajatiActori AA
+        #                         INNER JOIN ActoriReprezentatii AR ON AA.AngajatiActoriID = AR.AngajatiActoriID
+        #                         WHERE A.AngajatID = AA.AngajatID
+        #                         FOR XML PATH(''), TYPE
+        #                     ).value('.', 'NVARCHAR(MAX)'), 1, 2, '') AS CombinedRoles
+        #                   FROM Angajati A; """)
+
         cursor.execute("""SELECT 
-                            A.Nume, 
-                            A.Prenume, 
-                            STUFF((
-                                SELECT ', ' + AR.Rol
-                                FROM AngajatiActori AA
-                                INNER JOIN ActoriReprezentatii AR ON AA.AngajatiActoriID = AR.AngajatiActoriID
-                                WHERE A.AngajatID = AA.AngajatID
-                                FOR XML PATH(''), TYPE
-                            ).value('.', 'NVARCHAR(MAX)'), 1, 2, '') AS CombinedRoles
-                          FROM Angajati A; """)
+                          A.Nume, 
+                          A.Prenume, 
+                          STUFF((
+                          SELECT ', ' + AR.Rol
+                          FROM AngajatiActori AA
+                          INNER JOIN ActoriReprezentatii AR ON AA.AngajatiActoriID = AR.AngajatiActoriID
+                          WHERE A.AngajatID = AA.AngajatID
+                          FOR XML PATH(''), TYPE
+                          ).value('.', 'NVARCHAR(MAX)'), 1, 2, '') AS CombinedRoles,
+                          AA.StudiiDomeniu
+                         FROM Angajati A
+                         INNER JOIN AngajatiActori AA ON A.AngajatID = AA.AngajatID; """)
         actori = cursor.fetchall()
-        actori_dicts = [{'Nume': actor[0], 'Prenume': actor[1], 'Rol': actor[2]} for actor in actori]
+        actori_dicts = [{'Nume': actor[0], 'Prenume': actor[1], 'Rol': actor[2], 'Studii': actor[3]} for actor in actori]
         photos = {
            "Ionescu": "ionescu-maria.jpg", 
            "Florescu": "florescu-adrian.jpg", 

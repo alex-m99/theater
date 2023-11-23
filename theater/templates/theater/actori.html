@@ -11,25 +11,32 @@
 {% endblock %}
 
 {% block content %}
-{% comment %}
-  <ul class="flex-container">
+
+  <ul class="actors_list">
       {% for actor in actori %} 
-      <li class="flex-item">
-        <img src="{% static "theater/images/coding.jpg" %}" alt="Description of the image" />
-        <div class="inner-container">
-          <h1>{{actor.0}} {{ actor.1 }}</h1>
-          {% if actor.2 %}
-          <h2>Roluri: {{actor.2}}</h2>
+      <a href="{% url "actori-detail-page" actor.Nume %}">
+      <li class="actors_item">
+        {% if actor.Nume == 'Ionescu' or actor.Nume == 'Radulesu' or actor.Nume == 'Florescu' %}
+        <img src="{% static "theater/images/"|add:actor.Nume|add:".jpg" %}" alt= "Description of the image" />
+        {% else %}
+        <img src="{% static "theater/images/Radulescu.jpg" %}" alt="Description of the image" />
+        {% endif %}
+
+        <div class="details">
+          <h1>{{actor.Nume}} {{ actor.Prenume }}</h1>
+          {% if actor.Rol %}
+          <h2>Roluri: {{actor.Rol}}</h2>
           {% else %}
           <h2>Acest actor nu are roluri momentan</h2>
           {% endif %}
-          <h3>Additional Info</h3>
+          <h3>Studii: {{actor.Studii}}</h3>
         </div>
       </li>
+      </a>
       {% endfor %} 
     </ul>
-{% endcomment %}
-<ul class="actors_list">
+
+{% comment %} <ul class="actors_list">
   {% for actor in actori %} 
   {% if actor.Rol %}
   <a href="{% url "actori-detail-page" actor.Nume %}">
@@ -58,10 +65,11 @@
       <h3>Additional Info</h3>
     </div>
   </li>
-</a>
+</a> 
   {% endif %}
   {% endfor %} 
+ 
 </ul>
-
+ {% endcomment %}
 
 {% endblock %}
