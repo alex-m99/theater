@@ -11,16 +11,57 @@
 {% endblock %}
 
 {% block content %}
-<ul class="flex-container">
-    {% for actor in actori %} 
-    <li class="flex-item">
-      <img src="{% static "theater/images/coding.jpg" %}" alt="Description of the image" />
-      <div class="inner-container">
-        <h1>{{actor.0}} {{ actor.1 }}</h1>
-        <h2>Roluri: {{actor.2}}</h2>
-        <h3>Additional Info</h3>
-      </div>
-    </li>
-    {% endfor %} 
-  </ul>
+{% comment %}
+  <ul class="flex-container">
+      {% for actor in actori %} 
+      <li class="flex-item">
+        <img src="{% static "theater/images/coding.jpg" %}" alt="Description of the image" />
+        <div class="inner-container">
+          <h1>{{actor.0}} {{ actor.1 }}</h1>
+          {% if actor.2 %}
+          <h2>Roluri: {{actor.2}}</h2>
+          {% else %}
+          <h2>Acest actor nu are roluri momentan</h2>
+          {% endif %}
+          <h3>Additional Info</h3>
+        </div>
+      </li>
+      {% endfor %} 
+    </ul>
+{% endcomment %}
+<ul class="actors_list">
+  {% for actor in actori %} 
+  {% if actor.Rol %}
+  <a href="{% url "actori-detail-page" actor.Nume %}">
+  <li class="actors_item">
+    <img src="{% static "theater/images/"|add:actor.Nume|add:".jpg" %}" alt= "Description of the image" />
+    <div class="details">
+      <h1>{{actor.Nume}} {{ actor.Prenume }}</h1>
+      
+      <h2>Roluri: {{actor.Rol}}</h2>
+      <h3>Additional Info</h3>
+    </div>
+  </li>
+  </a>
+  {% endif %}
+  {% endfor %} 
+
+
+  {% for actor in actori %} 
+  {% if actor.Rol is null%}
+  <a href="{% url "actori-detail-page" actor.Nume %}">
+  <li class="actors_item">
+    <img src="{% static "theater/images/Radulescu.jpg" %}" alt="Description of the image" />
+    <div class="details">
+      <h1>{{actor.Nume}} {{ actor.Prenume }}</h1>
+      <h2>Acest actor nu are roluri momentan</h2>
+      <h3>Additional Info</h3>
+    </div>
+  </li>
+</a>
+  {% endif %}
+  {% endfor %} 
+</ul>
+
+
 {% endblock %}

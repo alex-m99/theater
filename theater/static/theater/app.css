@@ -2,7 +2,8 @@ body {
   margin: 0;
   padding: 0;
   position: relative;
-  background-color: #a7a0a0;
+  background-color: #292727 ;
+  /* background-color: #a7a0a0; */
 }
 
 #main-navigation {
@@ -36,7 +37,8 @@ body {
 
   #main-navigation a:hover,
   #main-navigation a:active {
-    color: #a19ca3;
+    /* color: #a19ca3; */
+    color: rgba(245, 95, 95, 0.25)
 }
 
   #main-navigation h1 a:hover,
@@ -51,7 +53,7 @@ body {
 
 
 /* Flex container for the list items */
-ul.flex-container {
+ul.actors_list {
   list-style: none;
   padding: 25px;
   margin: 0;
@@ -61,9 +63,16 @@ ul.flex-container {
   border: none;
   margin: 0 auto;
   margin-left: 200px;
+  /* color: rgba(245, 95, 95, 0.25); */
+  color: white;
 }
+
+/* ul.actors_list:hover,
+u1.actors_list:active {
+  color: rgba(245, 95, 95, 0.25);
+} */
 /* Individual list item with flex layout */
-.flex-item {
+.actors_item {
   display: flex;
   align-items: center;
   border: 1px solid #131212; /* Optional: Add a border for visual clarity */
@@ -74,18 +83,25 @@ ul.flex-container {
   margin: 0 auto;
   margin-left: 10px;
   margin-bottom: 20px;
+  position: relative;
 }
 
 /* Image styling */
-.flex-item img {
+.actors_item img {
   width: 100%; /* Adjust the width as needed */
-  height: 100%; /* Maintain aspect ratio */
+  height: auto; /* Maintain aspect ratio */
   margin-right: 10px; /* Add spacing between the image and the text */
   border: none;
 }
 
+.actors_item::before {
+  content: "";
+  display: block;
+  padding-top: 75%; /* Adjust the padding to achieve the desired aspect ratio (e.g., 4:3) */
+}
+
 /* Inner container for the right side content */
-.inner-container {
+.details {
   display: flex;
   flex-direction: column; /* Stack items vertically */
   width: 80%;
@@ -93,11 +109,16 @@ ul.flex-container {
 }
 
 /* Additional styling for the headings */
-.inner-container h1,
-.inner-container h2,
-.inner-container h3 {
+.details h1,
+.details h2,
+.details h3 {
   margin: 0; /* Remove default margin for clean layout */
   width: 100%;
   white-space: nowrap;
+}
+
+ul a {
+  color: inherit;
+  text-decoration: none;
 }
 
