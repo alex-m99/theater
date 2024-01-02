@@ -13,30 +13,27 @@
 <section id="summary">
   <h2>{{ actor.Nume }} {{ actor.Prenume }}</h2>
   <article>
-    {% comment %} <img src="{% static "blog/images/"|add:post.image %}" alt="{{ post.title }}" /> {% endcomment %}
-    {% if actor.Nume == 'Ionescu' or actor.Nume == 'Radulesu' or actor.Nume == 'Florescu' %}
+    {% if actor.Nume == 'Ionescu' and actor.Prenume == 'Maria'%}
         <img src="{% static "theater/images/"|add:actor.Nume|add:".jpg" %}" alt= "Description of the image" />
+      
+    {% comment "" %}
+    {% if actor.Nume == 'Ionescu' or actor.Nume == 'Radulesu' or actor.Nume == 'Florescu' %}
+        <img src="{% static "theater/images/actors"|add:actor.Nume|add:".jpg" %}" alt= "Description of the image" />
     {% else %}
-        <img src="{% static "theater/images/Radulescu.jpg" %}" alt="Description of the image" />
+        <img src="{% static "theater/images/actors/Radulescu.jpg" %}" alt="Description of the image" />
     {% endif %}
-    {% comment %} <address>By {{ post.author }}</address> {% endcomment %}
-    {% comment %} <div>Last updated on <time>{{ post.date|date:"d M Y" }}</time></div> {% endcomment %}
+     {% endcomment %}
+     {% else %}
+    <img src="{% static 'theater/images/actors/' %}{{ actor.ID }}.jpg" alt="Description of the image" />
+    {% endif %}
+    
   </article>
+  
 </section>
 
 <main>
   {% comment %} {{ post.content|linebreaks }} {% endcomment %}
-  <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Officiis nobis
-  aperiam est praesentium, quos iste consequuntur omnis exercitationem quam
-  velit labore vero culpa ad mollitia? Quis architecto ipsam nemo. Odio. </p>
-  
-  <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Officiis nobis
-    aperiam est praesentium, quos iste consequuntur omnis exercitationem quam
-    velit labore vero culpa ad mollitia? Quis architecto ipsam nemo. Odio. </p>
-  
-    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Officiis nobis
-      aperiam est praesentium, quos iste consequuntur omnis exercitationem quam
-      velit labore vero culpa ad mollitia? Quis architecto ipsam nemo. Odio. </p>
+  {{ description }}
 
 </main>
 {% endblock %}

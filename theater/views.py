@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.db import connection
-
+from .helper_functions import read_actor_description
 # Create your views here.
 
 def get_actors(request):
@@ -18,6 +18,7 @@ def get_actors(request):
         #                   FROM Angajati A; """)
 
         cursor.execute("""SELECT 
+                          AA.AngajatiActoriID,
                           A.Nume, 
                           A.Prenume, 
                           STUFF((
@@ -31,28 +32,33 @@ def get_actors(request):
                          FROM Angajati A
                          INNER JOIN AngajatiActori AA ON A.AngajatID = AA.AngajatID; """)
         actori = cursor.fetchall()
-        actori_dicts = [{'Nume': actor[0], 'Prenume': actor[1], 'Rol': actor[2], 'Studii': actor[3]} for actor in actori]
+        actori_dicts = [{ 'ID':actor[0], 'Nume': actor[1], 'Prenume': actor[2], 'Rol': actor[3], 'Studii': actor[4]} for actor in actori]
         photos = {
            "Ionescu": "ionescu-maria.jpg", 
            "Florescu": "florescu-adrian.jpg", 
            "Radulescu": "radulescu-daniel.jpg"
             }
         return render(request, "theater/actori.html", {
-            "actori": actori_dicts,
-            "photos": photos
+            "actori": actori_dicts
         })
     
 def actor_detail(request, name):
     with connection.cursor() as cursor:
-        cursor.execute("""SELECT A.Nume,
+        cursor.execute("""SELECT AA.AngajatiActoriID,
+                                 A.Nume,
                                  A.Prenume
                            FROM Angajati A
                            INNER JOIN AngajatiActori AA
                            ON A.AngajatID = AA.AngajatID
                        """)
         actori = cursor.fetchall()
-        actori_dicts = [{'Nume': actor[0], 'Prenume': actor[1]} for actor in actori]
-        identified_actor = next(actor for actor in actori_dicts if actor['Nume'] == name)
+        actori_dicts = [{ 'ID':actor[0],'Nume': actor[1], 'Prenume': actor[2]} for actor in actori]
+        full_actor_name = name.split('-')
+        #identified_actor = next(actor for actor in actori_dicts if actor['Nume'] == full_actor_name[0] )
+        identified_actor = next(actor for actor in actori_dicts if actor['Nume'] == full_actor_name[0].capitalize() and actor['Prenume']== full_actor_name[1].capitalize())
+        print(full_actor_name[0] + full_actor_name[1])
+        actor_description = read_actor_description(identified_actor['ID'])
         return render(request, "theater/actor_details.html", {
-            "actor": identified_actor
+            "actor": identified_actor,
+            "description": actor_description
         })

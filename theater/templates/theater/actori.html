@@ -14,14 +14,26 @@
 
   <ul class="actors_list">
       {% for actor in actori %} 
+     {% comment "" %}
       <a href="{% url "actori-detail-page" actor.Nume %}">
+       {% endcomment %}
+        
+       <a href="{% url 'actori-detail-page' name=actor.Nume|slugify|add:'-'|add:actor.Prenume|slugify %}">
+       
       <li class="actors_item">
-        {% if actor.Nume == 'Ionescu' or actor.Nume == 'Radulesu' or actor.Nume == 'Florescu' %}
+       
+        {% if actor.Nume == 'Ionescu' and actor.Prenume == 'Maria'%}
         <img src="{% static "theater/images/"|add:actor.Nume|add:".jpg" %}" alt= "Description of the image" />
+        {% comment "" %}
         {% else %}
         <img src="{% static "theater/images/Radulescu.jpg" %}" alt="Description of the image" />
         {% endif %}
-
+         {% endcomment %}
+         {% else %}
+       
+        <img src="{% static 'theater/images/actors/' %}{{ actor.ID }}.jpg" alt="Description of the image" />
+      
+        {% endif %}
         <div class="details">
           <h1>{{actor.Nume}} {{ actor.Prenume }}</h1>
           {% if actor.Rol %}
