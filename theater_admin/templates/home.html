@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+{% extends "index.html" %}
+{% load static %}
+
+{% block main_content %}
+<main role="main">
+    <div class="jumbotron">
+        <div class="container">
+            <img src="{% static '/images/logo.png' %}" class="rounded float-start" alt="logo" height="200" style="margin-right: 20px;" />
+            <h1 class="display-4">Hello, readers!</h1>
+            <p>Welcome to City Library. We have a large collection of books to cater the reading needs of all kinds of readers.</p>
+           <p><a role="button" href="#" class="btn btn-primary btn-lg">Browse our collection >></a><p>
+
+        </div>
+    </div>
+    <div class="container">
+        <div class="row">
+          <div class="col">
+            <h2>Why reading is important?</h2>
+                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. In in purus ac sem vulputate cursus. Nunc fermentum lacus ultricies velit finibus commodo. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Ut ac libero rutrum libero gravida tincidunt. Cras in urna urna. Quisque gravida aliquet lacinia. Donec consequat justo eget urna porttitor, nec accumsan nisl tincidunt. Duis ornare viverra odio, aliquet consectetur libero bibendum in. Nullam eget tempor magna. Vestibulum sit amet suscipit ipsum, non congue magna.</p>
+          </div>
+          <div class="col">
+            <h2>Key Benefits</h2>
+                <ul>
+                    <li>First item</li>
+                    <li>Second item</li>
+                </ul>
+
+          </div>
+          <div class="col">
+            <h3>Thought for the day</h3>
+            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. In in purus ac sem vulputate cursus. Nunc fermentum lacus ultricies velit finibus commodo. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Ut ac libero rutrum libero gravida tincidunt. Cras in urna urna. Quisque gravida aliquet lacinia. Donec consequat justo eget urna porttitor, nec accumsan nisl tincidunt. Duis ornare viverra odio, aliquet consectetur libero bibendum in. Nullam eget tempor magna. Vestibulum sit amet suscipit ipsum, non congue magna.</p>
+          </div>
+        </div>
+        <hr>
+      </div>
+</main>
+
+ <footer class="container">
+     <p>City Library 2023</p>
+
+</footer>
+    
+ {% endblock main_content %}

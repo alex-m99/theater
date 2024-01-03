@@ -31,6 +31,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'theater_admin.apps.TheaterAdminConfig',               
     'theater',
     'django.contrib.admin',
     'django.contrib.auth',
