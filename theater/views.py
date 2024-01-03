@@ -54,7 +54,7 @@ def actor_detail(request, name):
         actori = cursor.fetchall()
         actori_dicts = [{ 'ID':actor[0],'Nume': actor[1], 'Prenume': actor[2]} for actor in actori]
         full_actor_name = name.split('-')
-        #identified_actor = next(actor for actor in actori_dicts if actor['Nume'] == full_actor_name[0] )
+        
         identified_actor = next(actor for actor in actori_dicts if actor['Nume'] == full_actor_name[0].capitalize() and actor['Prenume']== full_actor_name[1].capitalize())
         print(full_actor_name[0] + full_actor_name[1])
         actor_description = read_actor_description(identified_actor['ID'])
