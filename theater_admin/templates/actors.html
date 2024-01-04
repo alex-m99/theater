@@ -120,7 +120,7 @@
                                     <td>{{actor.Telefon}}</td>
                                     <td>{{actor.Email}}</td>
                                     <td>{{actor.Studii}}</td>
-                                    <td><button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">Modificati sau stergeti </button></td>
+                                    <td><button type="button" class="btn btn-primary actor-modal-button" data-toggle="modal" data-target="#updateActorsModal" data-actor-id="{{ actor.ID }}" data-actor-nume="{{ actor.Nume }}" data-actor-prenume="{{ actor.Prenume }}" data-actor-cnp="{{ actor.CNP }}" data-actor-telefon="{{ actor.Telefon }}" data-actor-email="{{ actor.Email }}" data-actor-studii="{{ actor.Studii }}">Modificati sau stergeti</button></td>
                                 </tr>
                             {% endfor %}
                         </tbody>
@@ -131,27 +131,44 @@
     </div>
 </div>
 
-<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal fade" id="updateActorsModal" tabindex="-1" role="dialog" aria-labelledby="updateActorsLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="exampleModalLabel">Modificati sau stergeti</h5>
+          <h5 class="modal-title" id="updateActorsLabel">Modificati sau stergeti</h5>
           <button type="button" class="close" data-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>
         </div>
         <div class="modal-body">
-            <form>
+            <form id="actor-form">
+                <input type="hidden" id="actor-id" name="actor_id">
                 <div class="form-group">
-                  <label for="recipient-name" class="col-form-label">Recipient:</label>
-                  <input type="text" class="form-control" id="recipient-name">
+                    <label for="recipient-name" class="col-form-label">Nume:</label>
+                    <input type="text" class="form-control" id="recipient-name" name="actor_name">
                 </div>
                 <div class="form-group">
-                  <label for="message-text" class="col-form-label">Message:</label>
-                  <textarea class="form-control" id="message-text"></textarea>
+                    <label for="recipient-firstname" class="col-form-label">Prenume:</label>
+                    <input type="text" class="form-control" id="recipient-firstname" name="actor_firstname">
                 </div>
-              </form>
-            </div>
+                <div class="form-group">
+                    <label for="recipient-CNP" class="col-form-label">CNP:</label>
+                    <input type="text" class="form-control" id="recipient-CNP" name="actor_CNP">
+                </div>
+                <div class="form-group">
+                    <label for="recipient-phone" class="col-form-label">Telefon:</label>
+                    <input type="text" class="form-control" id="recipient-phone" name="actor_phone">
+                </div>
+                <div class="form-group">
+                    <label for="recipient-email" class="col-form-label">E-mail:</label>
+                    <input type="text" class="form-control" id="recipient-email" name="actor_email">
+                </div>
+                <div class="form-group">
+                    <label for="recipient-education" class="col-form-label">Studii:</label>
+                    <input type="text" class="form-control" id="recipient-education" name="actor_education">
+                </div>
+                <!-- Add similar input fields for other actor attributes -->
+            </form>
             <div class="modal-footer">
               <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
               <button type="button" class="btn btn-primary">Send message</button>
@@ -160,5 +177,57 @@
       </div>
     </div>
   </div>
+
+  <script>
+    $(document).ready(function () {
+        $('.actor-modal-button').on('click', function () {
+            var actorId = $(this).data('actor-id');
+            var actorNume = $(this).data('actor-nume');
+            var actorPrenume = $(this).data('actor-prenume');
+            var actorCNP = $(this).data('actor-CNP');
+            var actorTelefon = $(this).data('actor-telefon');
+            var actorEmail = $(this).data('actor-email');
+            var actorStudii = $(this).data('actor-studii');
+            // Add similar lines for other actor attributes
+
+            // Populate the hidden fields with actor data
+            $('#actor-id').val(actorId);
+            $('#recipient-name').val(actorNume);
+            $('#recipient-firstname').val(actorPrenume);
+            $('#recipient-CNP').val(actorCNP);
+            $('#recipient-phone').val(actorTelefon);
+            $('#recipient-email').val(actorEmail);
+            $('#recipient-education').val(actorStudii);
+            // Add similar lines for other modal fields
+
+            // Show the modal
+            $('#updateActorsModal').modal('show');
+        });
+
+        $('#actor-form').submit(function (e) {
+            e.preventDefault();
+
+            // Gather form data
+            var formData = $(this).serialize();
+
+            // Send AJAX request to your Django view
+            $.ajax({
+                type: 'POST',
+                url: '/adauga-actori/update',
+                data: formData,
+                success: function (response) {
+                    // Handle success
+                    console.log(response);
+                    $('#updateActorsModal').modal('hide');
+                    // Optionally, close the modal or update the UI
+                },
+                error: function (error) {
+                    // Handle error
+                    console.log(error);
+                }
+            });
+        });
+    });
+</script>
 
  {% endblock main_content %}

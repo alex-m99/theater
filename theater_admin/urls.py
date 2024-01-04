@@ -6,5 +6,6 @@ urlpatterns = [
     path("home", views.home), 
     path("adauga-actori", views.actors_tab),
     path("save", views.save_student),
-    path("adauga-actori/add", views.save_actor)
+    path("adauga-actori/add", views.save_actor),
+    path("adauga-actori/update", views.update_actor)
 ]
