@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
+from django.db import connection, transaction
 # Create your views here.
 
 
@@ -9,9 +10,9 @@ def home(request):
         "current_tab": "home"
     })
 
-def readers(request):
-    return render(request, "readers.html", {
-        "current_tab": "readers"
+def actors(request):
+    return render(request, "actors.html", {
+        "current_tab": "adauga-actori"
     })
 
 def shopping(request):
@@ -23,14 +24,48 @@ def save_student(request):
         "student_name": student_name
     })
 
-def readers_tab(request):
-    # readers = (code to read all readers)
-    return render(request, "redears.html", {
-        "current_tab": "readers",
-        "readers": readers,
-    })
+def actors_tab(request):
+    with connection.cursor() as cursor:
+        cursor.execute("""SELECT A.Nume,
+	                             A.Prenume,
+	                             A.CNP,
+	                             A.Telefon,
+	                             A.Email,
+	                             AA.StudiiDomeniu
+                                 FROM Angajati A
+                                 INNER JOIN AngajatiActori AA
+                                 ON A.AngajatID = AA.AngajatID; """)
+        actors = cursor.fetchall()
+        actors_dicts =  [{ 'Nume':actor[0], 'Prenume': actor[1], 'CNP': actor[2], 'Telefon': actor[3], 'Email': actor[4], 'Studii': actor[5]} for actor in actors]
 
-def save_reader(request):
-   # reader_item = reader() (code to UPDATE the reader table)
-    #after the reader is saved, the url is redirected to the readers tab
-    return redirect("/readers")
+        return render(request, "actors.html", {
+            "current_tab": "adauga-actori",
+            "actors": actors_dicts,
+        })
+
+def save_actor(request):
+    if request.method == 'POST':
+        # Extract data from the form
+        actor_name = request.POST.get('actor_name')
+        actor_firstname = request.POST.get('actor_firstname')
+        actor_CNP = request.POST.get('actor_CNP')
+        actor_phone = request.POST.get('actor_phone')
+        actor_email = request.POST.get('actor_email')
+        actor_education = request.POST.get('actor_education')
+
+        # Perform the SQL INSERT statement
+        with transaction.atomic():
+            with connection.cursor() as cursor:
+                cursor.execute("""INSERT INTO Angajati (Nume, Prenume, CNP, Telefon, Email)
+                                  OUTPUT INSERTED.AngajatID
+                                  VALUES (%s, %s, %s, %s, %s); """, [actor_name, actor_firstname, actor_CNP, actor_phone, actor_email])
+                last_angajat_id = cursor.fetchone()[0]
+
+        with transaction.atomic():
+            with connection.cursor() as cursor:
+                cursor.execute("""INSERT INTO AngajatiActori (AngajatID, StudiiDomeniu)
+                                  VALUES (%s, %s); """, [last_angajat_id, actor_education])
+
+        return redirect('/adauga-actori')  
+
+    return render(request, 'actors.html')

@@ -4,7 +4,7 @@ from . import views
 
 urlpatterns = [
     path("home", views.home), 
-    path("readers", views.readers),
+    path("adauga-actori", views.actors_tab),
     path("save", views.save_student),
-    path("readers/add", views.save_reader)
+    path("adauga-actori/add", views.save_actor)
 ]
