@@ -84,12 +84,31 @@ def update_actor(request):
         with connection.cursor() as cursor:
             cursor.execute("""UPDATE Angajati
                               SET Nume = %s, Prenume = %s, CNP = %s, Telefon = %s, Email = %s
-                              WHERE AngajatiID = %s;""", [actor_name, actor_firstname, actor_CNP, actor_phone, actor_email, actor_id])
+                              WHERE AngajatID = %s;""", [actor_name, actor_firstname, actor_CNP, actor_phone, actor_email, actor_id])
 
         with connection.cursor() as cursor:
-            cursor.execute("""UPDATE yourapp_angajatiactori
-                              SET StudiiSuperioare = %s
-                              WHERE AngajatiID = %s;""", [actor_education, actor_id])
+            cursor.execute("""UPDATE AngajatiActori
+                              SET StudiiDomeniu = %s
+                              WHERE AngajatID = %s;""", [actor_education, actor_id])
+
+        return redirect('/adauga-actori')  
+    
+    return render(request, 'actors.html')
+
+def delete_actor(request):
+    if request.method == 'POST':
+        actor_id = request.POST.get('actor_id')
+
+
+        with connection.cursor() as cursor:
+            cursor.execute("""DELETE FROM AngajatiActori
+                              WHERE AngajatID = %s;""", [actor_id])
+        
+        with connection.cursor() as cursor:
+            cursor.execute("""DELETE FROM Angajati
+                              WHERE AngajatID = %s;""", [actor_id])
+
+        
 
         return redirect('/adauga-actori')  
     

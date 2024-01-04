@@ -141,8 +141,9 @@
           </button>
         </div>
         <div class="modal-body">
-            <form id="actor-form">
-                <input type="hidden" id="actor-id" name="actor_id">
+            <form id="actor-form" action="/adauga-actori/update" method="POST">
+                {% csrf_token %}
+                <input type="hidden" class="form-control" id="actor-id" name="actor_id">
                 <div class="form-group">
                     <label for="recipient-name" class="col-form-label">Nume:</label>
                     <input type="text" class="form-control" id="recipient-name" name="actor_name">
@@ -167,12 +168,19 @@
                     <label for="recipient-education" class="col-form-label">Studii:</label>
                     <input type="text" class="form-control" id="recipient-education" name="actor_education">
                 </div>
-                <!-- Add similar input fields for other actor attributes -->
+                <div class="modal-footer">
+                    <button class="btn btn-primary" type="submit" data-action="/adauga-actori/update">Adauga modificari</button>
+                    <button class="btn btn-secondary" type="submit" data-action="/adauga-actori/delete">Sterge</button>
+                    <button class="btn btn-secondary" type="button" data-dismiss="modal">Close</button>
+
+                </div>
             </form>
-            <div class="modal-footer">
-              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-              <button type="button" class="btn btn-primary">Send message</button>
-            </div>
+
+            <form id="actor-form-delete" action="/adauga-actori/delete" method="POST">
+                {% csrf_token %}
+                <input type="hidden" class="form-control" id="actor-id-delete" name="actor_id">
+            </form>
+            
         </div>
       </div>
     </div>
@@ -180,17 +188,19 @@
 
   <script>
     $(document).ready(function () {
+        var refferingPage;
         $('.actor-modal-button').on('click', function () {
+            refferingPage = window.location.href;
             var actorId = $(this).data('actor-id');
             var actorNume = $(this).data('actor-nume');
             var actorPrenume = $(this).data('actor-prenume');
-            var actorCNP = $(this).data('actor-CNP');
+            var actorCNP = $(this).data('actor-cnp');
             var actorTelefon = $(this).data('actor-telefon');
             var actorEmail = $(this).data('actor-email');
             var actorStudii = $(this).data('actor-studii');
             // Add similar lines for other actor attributes
 
-            // Populate the hidden fields with actor data
+            // Populate the form fields with actor data
             $('#actor-id').val(actorId);
             $('#recipient-name').val(actorNume);
             $('#recipient-firstname').val(actorPrenume);
@@ -200,32 +210,20 @@
             $('#recipient-education').val(actorStudii);
             // Add similar lines for other modal fields
 
+
             // Show the modal
-            $('#updateActorsModal').modal('show');
+        $('#updateActorsModal').modal('show');
         });
 
-        $('#actor-form').submit(function (e) {
-            e.preventDefault();
-
-            // Gather form data
-            var formData = $(this).serialize();
-
-            // Send AJAX request to your Django view
-            $.ajax({
-                type: 'POST',
-                url: '/adauga-actori/update',
-                data: formData,
-                success: function (response) {
-                    // Handle success
-                    console.log(response);
-                    $('#updateActorsModal').modal('hide');
-                    // Optionally, close the modal or update the UI
-                },
-                error: function (error) {
-                    // Handle error
-                    console.log(error);
-                }
-            });
+        $('#updateActorsModal').on('hidden.bs.modal', function () {
+            // Navigate back to the previous page when the modal is closed
+            history.replaceState(null, null, referringPage);
+        });
+            
+        $('#updateActorsModal').on('submit', '#actor-form', function () {
+            // Submit the form to the appropriate URL based on the button clicked
+            var action = $(this).find('button:focus').data('action');
+            $(this).attr('action', action);
         });
     });
 </script>
