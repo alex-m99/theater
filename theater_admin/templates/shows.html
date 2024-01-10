@@ -3,48 +3,110 @@
 {% load static %}
 
 {% block main_content %}
-   
+
 <div class="container-flex text-center justify-content-center align-items-center" style="padding-top: 10px; padding-bottom: 20px; margin-top: 10px;vertical-align: middle;">
     <div class="row justify-content-center align-middle" style="margin-top: 10px;height:60px;">
         <div class="col-md-4 text-light" style="background:#4B088A;">
-            <h4 style="margin-top:15px">Adauga un actor</h4>
+            <h4 style="margin-top:15px">Adauga un spectacol</h4>
         </div>
         <div class="col-md-8">
-            <h4>Cauta actori</h4>
+            <h4>Cauta spectacole</h4>
         </div>
     </div>
     <div class="row">
         <div class="col-md-4">
-            <div class="container" style="overflow-y:auto;height:450px;background: #CEECF5;">
-                <form class="d-flex" action="/adauga-actori/add" method="POST">
+            <div class="container" style="overflow-y:auto;height:595px;background: #CEECF5;">
+                <form class="d-flex" action="/adauga-spectacole/add" method="POST">
                     {% csrf_token %}
                     <table class="table" style="margin-top: 20px;">
+                         {% comment "" %}
                         <tr>
                             <td style="text-align: left;vertical-align: middle; padding-left: 15px;">Nume</td>
-                            <td><input type="text" class="form-control" name="actor_name"></td>
+                            <td><input type="text" class="form-control" name="show_name"></td>
                         </tr>  
                         <tr>
-                            <td style="text-align: left;vertical-align: middle; padding-left: 15px;">Prenume</td>
-                            <td><input type="text" class="form-control" name="actor_firstname"></td>
+                            <td style="text-align: left;vertical-align: middle; padding-left: 15px;">Autor</td>
+                            <td><input type="text" class="form-control" name="show_author"></td>
+                        </tr> 
+                        {% endcomment %}
+                        <tr>
+                            <td style="text-align: left;vertical-align: middle; padding-left: 15px;">Piesa</td>
+                            <td><select class="form-control" name="play_name">
+                                {% for play in plays  %}
+                                <option value="{{ play.Nume }}">{{play.Nume}}</option>
+                                {% endfor %}
+                                </select>
+                           </td>
                         </tr> 
                         <tr>
-                            <td style="text-align: left;vertical-align: middle; padding-left: 15px;">CNP</td>
-                            <td><input type="text" class="form-control" name="actor_CNP"></td>
+                            <td style="text-align: left;vertical-align: middle; padding-left: 15px;">Regie</td>
+                            <td><select class="form-control" name="director_name">
+                                {% for employee in employees  %}
+                                {% if employee.Functie == "Regizor" %}
+                                <option value="{{ employee.NumeComplet }}">{{employee.NumeComplet}}</option>
+                                {% endif %}
+                                {% endfor %}
+                                </select>
+                           </td>
                         </tr> 
                         <tr>
-                            <td style="text-align: left;vertical-align: middle; padding-left: 15px;">Telefon</td>
-                            <td><input type="text" class="form-control" name="actor_phone"></td>
+                            <td style="text-align: left;vertical-align: middle; padding-left: 15px;">Scenografie</td>
+                            <td><select class="form-control" name="scenographer_name">
+                                {% for employee in employees  %}
+                                {% if employee.Functie == "Scenograf" %}
+                                <option value="{{ employee.NumeComplet }}">{{employee.NumeComplet}}</option>
+                                {% endif %}
+                                {% endfor %}
+                                </select>
+                           </td>
                         </tr> 
                         <tr>
-                            <td style="text-align: left;vertical-align: middle; padding-left: 15px;">E-mail</td>
-                            <td><input type="text" class="form-control" name="actor_email"></td>
+                            <td style="text-align: left;vertical-align: middle; padding-left: 15px;">Productie</td>
+                            <td><select class="form-control" name="producer_name">
+                                {% for employee in employees  %}
+                                {% if employee.Functie == "Producator" %}
+                                <option value="{{ employee.NumeComplet }}">{{employee.NumeComplet}}</option>
+                                {% endif %}
+                                {% endfor %}
+                                </select>
+                           </td>
                         </tr> 
                         <tr>
-                            <td style="text-align: left;vertical-align: middle; padding-left: 15px;">Studii</td>
-                            <td><input type="text" class="form-control" name="actor_education"></td>
+                            <td style="text-align: left;vertical-align: middle; padding-left: 15px;">Sunet</td>
+                            <td><select class="form-control" name="sound_name">
+                                {% for employee in employees  %}
+                                {% if employee.Functie == "Operator sunet" %}
+                                <option value="{{ employee.NumeComplet }}">{{employee.NumeComplet}}</option>
+                                {% endif %}
+                                {% endfor %}
+                                </select>
+                           </td>
+                        </tr> 
+
+                        <tr>
+                            <td style="text-align: left;vertical-align: middle; padding-left: 15px;">Lumini</td>
+                            <td><select class="form-control" name="lights_name">
+                                {% for employee in employees  %}
+                                {% if employee.Functie == "Operator lumini" %}
+                                <option value="{{ employee.NumeComplet }}">{{employee.NumeComplet}}</option>
+                                {% endif %}
+                                {% endfor %}
+                                </select>
+                           </td>
                         </tr> 
                         <tr>
-                            <td colspan="2"><button class="btn btn-primary" type="submit">Salveaza</button></td>
+                            <td style="text-align: left;vertical-align: middle; padding-left: 15px;">Costume</td>
+                            <td><select class="form-control" name="costume_name">
+                                {% for employee in employees  %}
+                                {% if employee.Functie == "Costumier" %}
+                                <option value="{{ employee.NumeComplet }}">{{employee.NumeComplet}}</option>
+                                {% endif %}
+                                {% endfor %}
+                                </select>
+                           </td>
+                        </tr> 
+                        <tr>
+                            <td colspan="2"><button class="btn btn-primary" type="submit">Save</button></td>
                         </tr>
                     </table>
                 </form>
@@ -63,14 +125,14 @@
                     <div class="container-fluid justify-content-center align-items-center">
                         <form class="d-flex" role="search" action="/adauga-actori/search" method="POST">
                             {% csrf_token %}
-                            <input class="form-control me-2" type="search" placeholder="Cauta" aria-label="Search" name="search_name">
-                            <button class="btn btn-outline-primary" type="submit">Cauta</button>
+                            <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search" name="search_name">
+                            <button class="btn btn-outline-primary" type="submit">Salveaza</button>
                           </form>
                     </div>
                 </nav>
             </div>
             <div class="row" style="margin-top: 20px;">
-                <p>{{actors|length}} actori in baza de date.</p>
+                <p>{{actors|length}} spectacole in baza de date.</p>
             </div>
             <div class="row" style="margin-top: 20px;">
                 <div class="container" style="overflow-y: auto;height: 400px;">
@@ -78,23 +140,29 @@
                         <thead>
                             <tr>
                                 <td>Nume</td>
-                                <td>Prenume</td>
-                                <td>CNP</td>
-                                <td>Telefon</td>
-                                <td>Email</td>
-                                <td>Studii</td>
-                                <td>Actiune</td>
+                                <td>Autor</td>
+                                <td>Gen</td>
+                                <td>Regizor</td>
+                                <td>Scenograf</td>
+                                <td>Producator</td>
+                                <td>Sunet</td>
+                                <td>Lumini</td>
+                                <td>Costume</td>
+                                <td>Modificati sau stergeti</td>
                             </tr>
                         </thead>
                         <tbody>
-                            {% for actor in actors  %}
+                            {% for show in shows  %}
                                 <tr>
-                                    <td>{{actor.Nume}}</td>
-                                    <td>{{actor.Prenume}}</td>
-                                    <td>{{actor.CNP}}</td>
-                                    <td>{{actor.Telefon}}</td>
-                                    <td>{{actor.Email}}</td>
-                                    <td>{{actor.Studii}}</td>
+                                    <td>{{show.Nume}}</td>
+                                    <td>{{show.Autor}}</td>
+                                    <td>{{show.Gen}}</td>
+                                    <td>{{show.Regizor}}</td>
+                                    <td>{{show.Scenograf}}</td>
+                                    <td>{{show.Producator}}</td>
+                                    <td>{{show.Sunet}}</td>
+                                    <td>{{show.Lumini}}</td>
+                                    <td>{{show.Costume}}</td>
                                     <td><button type="button" class="btn btn-primary actor-modal-button" data-toggle="modal" data-target="#updateActorsModal" data-actor-id="{{ actor.ID }}" data-actor-nume="{{ actor.Nume }}" data-actor-prenume="{{ actor.Prenume }}" data-actor-cnp="{{ actor.CNP }}" data-actor-telefon="{{ actor.Telefon }}" data-actor-email="{{ actor.Email }}" data-actor-studii="{{ actor.Studii }}">Modificati sau stergeti</button></td>
                                 </tr>
                             {% endfor %}
@@ -146,7 +214,7 @@
                 <div class="modal-footer">
                     <button class="btn btn-primary" type="submit" data-action="/adauga-actori/update">Adauga modificari</button>
                     <button class="btn btn-secondary" type="submit" data-action="/adauga-actori/delete">Sterge</button>
-                    <button class="btn btn-secondary" type="button" data-dismiss="modal">Inchide</button>
+                    <button class="btn btn-secondary" type="button" data-dismiss="modal">Close</button>
 
                 </div>
             </form>
@@ -203,4 +271,7 @@
     });
 </script>
 
- {% endblock main_content %}
+{% endblock main_content %}
+
+
+
