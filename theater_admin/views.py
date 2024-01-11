@@ -228,6 +228,7 @@ def save_show(request):
             piesa_id = piesa_id[0]
 
         # Step 2: Get AngajatSuportID for each role
+        support_id_list = []
         with connection.cursor() as cursor:
             roles = {"Regizor": director_name, 
                      "Scenograf": scenographer_name, 
@@ -236,7 +237,6 @@ def save_show(request):
                      "Operator lumini": lights_name,  
                      "Costumier": costume_name}
 
-            support_id_list = []
             for role in roles:
                 cursor.execute(
                         """SELECT ASU.AngajatiSuportID 
@@ -248,9 +248,9 @@ def save_show(request):
                 support_id = cursor.fetchone()
                 if support_id:
                     support_id_list.append(support_id[0])
-           
+
+        # Step 3: Insert a new Reprezentatii record
         with connection.cursor() as cursor:
-            # Step 3: Insert a new Reprezentatii record
             cursor.execute(
                 """INSERT INTO Reprezentatii (PiesaID)
                    OUTPUT INSERTED.ReprezentatieID
@@ -258,9 +258,9 @@ def save_show(request):
                 [piesa_id]
             )
 
-        reprezentatie_id = cursor.fetchone()[0]
+            reprezentatie_id = cursor.fetchone()[0]
 
-         # Step 4: Insert into SuportReprezentatii
+        # Step 4: Insert into SuportReprezentatii
         with connection.cursor() as cursor:
             for support in support_id_list:
                 cursor.execute(
@@ -268,13 +268,14 @@ def save_show(request):
                        VALUES (%s, %s)""",
                     [support, reprezentatie_id]
                 )
-            # Commit the transaction
-            #connection.commit()
-                
-        print(request.POST)
 
+        # Commit the transaction
+        connection.commit()
+
+        print(request.POST)
 
         return redirect('/adauga-spectacole')  
 
     return render(request, 'shows.html')
+
     
