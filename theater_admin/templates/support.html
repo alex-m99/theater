@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+{% extends "index.html" %}
+{% load static %}
+
+{% block main_content %}
+   
+<div class="container-flex text-center justify-content-center align-items-center" style="padding-top: 10px; padding-bottom: 20px; margin-top: 10px;vertical-align: middle;">
+    <div class="row justify-content-center align-middle" style="margin-top: 10px;height:60px;">
+        <div class="col-md-4 text-light" style="background:#4B088A;">
+            <h4 style="margin-top:15px">Adauga un angajat</h4>
+        </div>
+        <div class="col-md-8">
+            <h4>Cauta angajati</h4>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-4">
+            <div class="container" style="overflow-y:auto;height:450px;background: #CEECF5;">
+                <form class="d-flex" action="/adauga-suport/add" method="POST">
+                    {% csrf_token %}
+                    <table class="table" style="margin-top: 20px;">
+                        <tr>
+                            <td style="text-align: left;vertical-align: middle; padding-left: 15px;">Nume</td>
+                            <td><input type="text" class="form-control" name="support_name"></td>
+                        </tr>  
+                        <tr>
+                            <td style="text-align: left;vertical-align: middle; padding-left: 15px;">Prenume</td>
+                            <td><input type="text" class="form-control" name="support_firstname"></td>
+                        </tr> 
+                        <tr>
+                            <td style="text-align: left;vertical-align: middle; padding-left: 15px;">CNP</td>
+                            <td><input type="text" class="form-control" name="support_CNP"></td>
+                        </tr> 
+                        <tr>
+                            <td style="text-align: left;vertical-align: middle; padding-left: 15px;">Telefon</td>
+                            <td><input type="text" class="form-control" name="support_phone"></td>
+                        </tr> 
+                        <tr>
+                            <td style="text-align: left;vertical-align: middle; padding-left: 15px;">E-mail</td>
+                            <td><input type="text" class="form-control" name="support_email"></td>
+                        </tr> 
+                        <tr>
+                            <td style="text-align: left;vertical-align: middle; padding-left: 15px;">Functie</td>
+                            <td><input type="text" class="form-control" name="support_job"></td>
+                           </td>
+                        </tr> 
+                        <tr>
+                            <td colspan="2"><button class="btn btn-primary" type="submit">Salveaza</button></td>
+                        </tr>
+                    </table>
+                </form>
+                {% comment "" %}
+                <ul style="text-align: left;vertical-align: middle;padding-left: 15px;">
+                    <li><small>Readers should not register multiple times</small></li>
+                    <li><small>Duplicate reader registrations will be deactivated</small></li>
+                    <li><small>Contact information provided above must be correct and subject to verification</small></li>
+                </ul>
+                {% endcomment %}
+            </div>
+        </div>
+        <div class="col-md-8">
+            <div class="row">
+                <nav class="navbar bg-body-light">
+                    <div class="container-fluid justify-content-center align-items-center">
+                        <form class="d-flex" role="search" action="/adauga-suport/search" method="POST">
+                            {% csrf_token %}
+                            <input class="form-control me-2" type="search" placeholder="Cauta" aria-label="Search" name="search_name">
+                            <button class="btn btn-outline-primary" type="submit">Cauta</button>
+                          </form>
+                    </div>
+                </nav>
+            </div>
+            <div class="row" style="margin-top: 20px;">
+                <p>{{actors|length}} actori in baza de date.</p>
+            </div>
+            <div class="row" style="margin-top: 20px;">
+                <div class="container" style="overflow-y: auto;height: 400px;">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <td>Nume</td>
+                                <td>Prenume</td>
+                                <td>CNP</td>
+                                <td>Telefon</td>
+                                <td>Email</td>
+                                <td>Functie</td>
+                                <td>Actiune</td>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for employee in support  %}
+                                <tr>
+                                    <td>{{employee.Nume}}</td>
+                                    <td>{{employee.Prenume}}</td>
+                                    <td>{{employee.CNP}}</td>
+                                    <td>{{employee.Telefon}}</td>
+                                    <td>{{employee.Email}}</td>
+                                    <td>{{employee.Functie}}</td>
+                                    <td><button type="button" class="btn btn-primary actor-modal-button" data-toggle="modal" data-target="#updateActorsModal" data-actor-id="{{ actor.ID }}" data-actor-nume="{{ actor.Nume }}" data-actor-prenume="{{ actor.Prenume }}" data-actor-cnp="{{ actor.CNP }}" data-actor-telefon="{{ actor.Telefon }}" data-actor-email="{{ actor.Email }}" data-actor-studii="{{ actor.Studii }}">Modificati sau stergeti</button></td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="updateSupportModal" tabindex="-1" role="dialog" aria-labelledby="updateActorsLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="updateActorsLabel">Modificati sau stergeti</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+            <form id="support-form" action="/adauga-suport/update" method="POST">
+                {% csrf_token %}
+                <input type="hidden" class="form-control" id="support-id" name="support_id">
+                <div class="form-group">
+                    <label for="recipient-name" class="col-form-label">Nume:</label>
+                    <input type="text" class="form-control" id="recipient-name" name="suport_name">
+                </div>
+                <div class="form-group">
+                    <label for="recipient-firstname" class="col-form-label">Prenume:</label>
+                    <input type="text" class="form-control" id="recipient-firstname" name="support_firstname">
+                </div>
+                <div class="form-group">
+                    <label for="recipient-CNP" class="col-form-label">CNP:</label>
+                    <input type="text" class="form-control" id="recipient-CNP" name="support_CNP">
+                </div>
+                <div class="form-group">
+                    <label for="recipient-phone" class="col-form-label">Telefon:</label>
+                    <input type="text" class="form-control" id="recipient-phone" name="support_phone">
+                </div>
+                <div class="form-group">
+                    <label for="recipient-email" class="col-form-label">E-mail:</label>
+                    <input type="text" class="form-control" id="recipient-email" name="support_email">
+                </div>
+                <div class="form-group">
+                    <label for="recipient-education" class="col-form-label">Functie:</label>
+                    <input type="text" class="form-control" id="recipient-education" name="support_job">
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-primary" type="submit" data-action="/adauga-suport/update">Adauga modificari</button>
+                    <button class="btn btn-secondary" type="submit" data-action="/adauga-suport/delete">Sterge</button>
+                    <button class="btn btn-secondary" type="button" data-dismiss="modal">Inchide</button>
+
+                </div>
+            </form>
+
+            <form id="support-form-delete" action="/adauga-suport/delete" method="POST">
+                {% csrf_token %}
+                <input type="hidden" class="form-control" id="support-id-delete" name="support_id">
+            </form>
+            
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    $(document).ready(function () {
+        var refferingPage;
+        $('.support-modal-button').on('click', function () {
+            refferingPage = window.location.href;
+            var supportId = $(this).data('support-id');
+            var supportNume = $(this).data('support-nume');
+            var supportPrenume = $(this).data('support-prenume');
+            var supportCNP = $(this).data('support-cnp');
+            var supportTelefon = $(this).data('support-telefon');
+            var supportEmail = $(this).data('support-email');
+            var supportFunctie = $(this).data('support-functie');
+            // Add similar lines for other actor attributes
+
+            // Populate the form fields with actor data
+            $('#support-id').val(supportId);
+            $('#recipient-name').val(supportNume);
+            $('#recipient-firstname').val(supportPrenume);
+            $('#recipient-CNP').val(supportCNP);
+            $('#recipient-phone').val(supportTelefon);
+            $('#recipient-email').val(supportEmail);
+            $('#recipient-education').val(supportFunctie);
+            // Add similar lines for other modal fields
+
+
+            // Show the modal
+        $('#updateSupportModal').modal('show');
+        });
+
+        $('#updateSupportModal').on('hidden.bs.modal', function () {
+            // Navigate back to the previous page when the modal is closed
+            history.replaceState(null, null, referringPage);
+        });
+            
+        $('#updateSupportModal').on('submit', '#support-form', function () {
+            // Submit the form to the appropriate URL based on the button clicked
+            var action = $(this).find('button:focus').data('action');
+            $(this).attr('action', action);
+        });
+    });
+</script>
+
+ {% endblock main_content %}

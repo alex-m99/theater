@@ -141,6 +141,51 @@ def search_actor(request):
     return render(request, 'actors.html')
 
 
+def support_tab(request):
+     with connection.cursor() as cursor:
+            cursor.execute("""SELECT A.AngajatID,
+                                     A.Nume,
+                                     A.Prenume,
+                                     A.CNP,
+                                     A.Telefon,
+                                     A.Email,
+                                     ASU.Functie
+                                     FROM Angajati A
+                                     INNER JOIN AngajatiSuport ASU
+                                     ON A.AngajatID = ASU.AngajatID; """)
+            support = cursor.fetchall()
+    
+     support_dicts =  [{ 'ID': employee[0], 'Nume':employee[1], 'Prenume': employee[2], 'CNP': employee[3], 'Telefon': employee[4], 'Email': employee[5], 'Functie': employee[6]} for employee in support]  
+     return render(request, "support.html", {
+            "current_tab": "adauga-suport",
+            "support":support_dicts,
+
+        })
+
+def save_support(request):
+    if request.method == 'POST':
+        support_name = request.POST.get('support_name')
+        support_firstname = request.POST.get('support_firstname')
+        support_CNP = request.POST.get('support_CNP')
+        support_phone = request.POST.get('support_phone')
+        support_email = request.POST.get('support_email')
+        support_job = request.POST.get('support_job')
+
+        with transaction.atomic():
+            with connection.cursor() as cursor:
+                cursor.execute("""INSERT INTO Angajati (Nume, Prenume, CNP, Telefon, Email)
+                                  OUTPUT INSERTED.AngajatID
+                                  VALUES (%s, %s, %s, %s, %s); """, [support_name, support_firstname, support_CNP, support_phone, support_email])
+                last_angajat_id = cursor.fetchone()[0]
+
+        with transaction.atomic():
+            with connection.cursor() as cursor:
+                cursor.execute("""INSERT INTO AngajatiSuport (AngajatID, Functie)
+                                  VALUES (%s, %s); """, [last_angajat_id, support_job])
+        return redirect('/adauga-actori')  
+    return render(request, 'support.html')
+
+
 def shows_tab(request):
     #get supprort employees
     with connection.cursor() as cursor:
@@ -213,12 +258,24 @@ def save_show(request):
     if request.method == 'POST':
         # Extract data from the form
         play_name = request.POST.get('play_name')
-        director_name = request.POST.get('director_name')
-        scenographer_name = request.POST.get('scenographer_name')
-        producer_name = request.POST.get('producer_name')
-        sound_name = request.POST.get('sound_name')
-        lights_name = request.POST.get('lights_name')
-        costume_name = request.POST.get('costume_name')
+
+        director_full_name = request.POST.get('director_name')
+        director_last_name, director_first_name = director_full_name.split(maxsplit=1)
+
+        scenographer_full_name = request.POST.get('scenographer_name')
+        scenographer_last_name, scenographer_first_name = scenographer_full_name.split(maxsplit=1)
+
+        producer_full_name = request.POST.get('producer_name')
+        producer_last_name, producer_first_name = producer_full_name.split(maxsplit=1)
+
+        sound_full_name = request.POST.get('sound_name')
+        sound_last_name, sound_first_name = sound_full_name.split(maxsplit=1)
+
+        lights_full_name = request.POST.get('lights_name')
+        lights_last_name, lights_first_name = lights_full_name.split(maxsplit=1)
+
+        costume_full_name = request.POST.get('costume_name')
+        costume_last_name, costume_first_name = costume_full_name.split(maxsplit=1)
 
         # Step 1: Get PiesaID for the given play_name
         with connection.cursor() as cursor:
@@ -230,20 +287,33 @@ def save_show(request):
         # Step 2: Get AngajatSuportID for each role
         support_id_list = []
         with connection.cursor() as cursor:
-            roles = {"Regizor": director_name, 
-                     "Scenograf": scenographer_name, 
-                     "Producator": producer_name, 
-                     "Operator sunet": sound_name, 
-                     "Operator lumini": lights_name,  
-                     "Costumier": costume_name}
+            roles = {
+                "Regizor": (director_last_name, director_first_name),
+                "Scenograf": (scenographer_last_name, scenographer_first_name),
+                "Producator": (producer_last_name, producer_first_name),
+                "Operator sunet": (sound_last_name, sound_first_name),
+                "Operator lumini": (lights_last_name, lights_first_name),
+                "Costumier": (costume_last_name, costume_first_name),
+            }
 
-            for role in roles:
-                cursor.execute(
+            for role, name in roles.items():
+                if isinstance(name, tuple):
+                    # For all roles, check both last name and first name
+                    cursor.execute(
+                        """SELECT ASU.AngajatiSuportID 
+                        FROM AngajatiSuport ASU 
+                        JOIN Angajati A ON ASU.AngajatID = A.AngajatID 
+                        WHERE ASU.Functie = %s AND A.Nume = %s AND A.Prenume = %s""",
+                        [role, name[0], name[1]]
+                    )
+                else:
+                    # For other roles, check only the name
+                    cursor.execute(
                         """SELECT ASU.AngajatiSuportID 
                         FROM AngajatiSuport ASU 
                         JOIN Angajati A ON ASU.AngajatID = A.AngajatID 
                         WHERE ASU.Functie = %s AND A.Nume = %s""",
-                        [role, roles[role]]
+                        [role, name]
                     )
                 support_id = cursor.fetchone()
                 if support_id:
@@ -259,6 +329,9 @@ def save_show(request):
             )
 
             reprezentatie_id = cursor.fetchone()[0]
+
+        print(support_id_list)
+        print(reprezentatie_id)
 
         # Step 4: Insert into SuportReprezentatii
         with connection.cursor() as cursor:
