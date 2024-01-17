@@ -16,15 +16,7 @@ def actors(request):
         "current_tab": "adauga-actori"
     })
 
-def shopping(request):
-    return HttpResponse("Welcome to shopping")
-
-def save_student(request):
-    student_name = request.POST["student_name"]
-    return  render(request, "welcome.html", {
-        "student_name": student_name
-    })
-
+# ---------------------- ACTORI ----------------------------
 def actors_tab(request):
     if 'search_name' in request.GET:
         # Handle the search case
@@ -141,6 +133,8 @@ def search_actor(request):
     return render(request, 'actors.html')
 
 
+# ---------------------- SUPORT ----------------------------
+
 def support_tab(request):
      with connection.cursor() as cursor:
             cursor.execute("""SELECT A.AngajatID,
@@ -182,9 +176,109 @@ def save_support(request):
             with connection.cursor() as cursor:
                 cursor.execute("""INSERT INTO AngajatiSuport (AngajatID, Functie)
                                   VALUES (%s, %s); """, [last_angajat_id, support_job])
-        return redirect('/adauga-actori')  
+        return redirect('/adauga-suport')  
     return render(request, 'support.html')
 
+def update_support(request):
+    if request.method == 'POST':
+        support_id = request.POST.get('support_id')
+        suport_name = request.POST.get('suport_name')
+        support_firstname = request.POST.get('support_firstname')
+        support_CNP = request.POST.get('support_CNP')
+        support_phone = request.POST.get('support_phone')
+        support_email = request.POST.get('support_email')
+        support_job = request.POST.get('support_job')
+
+        with connection.cursor() as cursor:
+            cursor.execute("""UPDATE Angajati
+                              SET Nume = %s, Prenume = %s, CNP = %s, Telefon = %s, Email = %s
+                              WHERE AngajatID = %s;""", [suport_name, support_firstname, support_CNP, support_phone, support_email, support_id])
+
+        with connection.cursor() as cursor:
+            cursor.execute("""UPDATE AngajatiSuport
+                              SET Functie = %s
+                              WHERE AngajatID = %s;""", [support_job, support_id])
+            
+        return redirect('/adauga-suport')
+    return render(request, 'support.html')
+
+def delete_support(request):
+    if request.method == 'POST':
+        actor_id = request.POST.get('support_id')
+
+        with connection.cursor() as cursor:
+            cursor.execute("""DELETE FROM AngajatiSuport
+                              WHERE AngajatID = %s;""", [actor_id])
+        
+        with connection.cursor() as cursor:
+            cursor.execute("""DELETE FROM Angajati
+                              WHERE AngajatID = %s;""", [actor_id])
+
+        return redirect('/adauga-suport')      
+    return render(request, 'support.html')
+        
+# ---------------------- PIESE ----------------------------
+
+def plays_tab(request):
+    with connection.cursor() as cursor:
+            cursor.execute("""SELECT P.PiesaID,
+                                     P.Nume,
+                                     P.Autor,
+                                     P.GenDramatic
+                                     FROM Piese P""")
+            plays = cursor.fetchall()
+    
+    plays_dicts =  [{ 'ID': play[0], 'Nume':play[1], 'Autor': play[2], 'GenDramatic': play[3]} for play in plays]
+
+
+    return render(request, "plays.html", {
+            "current_tab": "adauga-piese",
+            "plays": plays_dicts
+        })
+
+def save_play(request):
+    if request.method == 'POST':
+        play_name = request.POST.get('play_name')
+        play_author = request.POST.get('play_author')
+        play_genre = request.POST.get('play_genre')
+
+        with transaction.atomic():
+            with connection.cursor() as cursor:
+                cursor.execute("""INSERT INTO Piese (Nume, Autor, GenDramatic)
+                                  VALUES (%s, %s, %s); """, [play_name, play_author, play_genre])
+
+        return redirect('/adauga-piese')  
+    return render(request, 'plays.html')
+
+def update_play(request):
+    if request.method == 'POST':
+        play_id = request.POST.get('play_id')
+        play_name = request.POST.get('play_name')
+        play_author = request.POST.get('play_author')
+        play_genre = request.POST.get('play_genre')
+
+        with connection.cursor() as cursor:
+            cursor.execute("""UPDATE Piese
+                              SET Nume = %s, Autor = %s, GenDramatic = %s
+                              WHERE PiesaID = %s;""", [play_name, play_author, play_genre, play_id])
+
+        return redirect('/adauga-piese')  
+    return render(request, 'plays.html')
+
+
+def delete_play(request):
+    if request.method == 'POST':
+        play_id = request.POST.get('play_id')
+
+        with connection.cursor() as cursor:
+            cursor.execute("""DELETE FROM Piese
+                              WHERE PiesaID = %s;""", [play_id])
+
+        return redirect('/adauga-piese')  
+    return render(request, 'plays.html')
+
+
+# ---------------------- SPECTACOLE ----------------------------
 
 def shows_tab(request):
     #get supprort employees
@@ -279,7 +373,9 @@ def save_show(request):
 
         # Step 1: Get PiesaID for the given play_name
         with connection.cursor() as cursor:
-            cursor.execute("SELECT PiesaID FROM Piese WHERE Nume = %s", [play_name])
+            cursor.execute("""SELECT PiesaID 
+                              FROM Piese 
+                              WHERE Nume = %s""", [play_name])
             piesa_id = cursor.fetchone()
         if piesa_id:
             piesa_id = piesa_id[0]
@@ -351,4 +447,40 @@ def save_show(request):
 
     return render(request, 'shows.html')
 
+def update_show(request):
+    if request.method == 'POST':
+    #     show_id = request.POST.get('show_id')
+    #     play_id = request.POST.get('play_id')
+    #     play_name = request.POST.get('play_author')
+    #     director_name = request.POST.get('play_genre')
+    #     scenographer_name = request.POST.get('scenographer_name')
+    #     producer_name = request.POST.get('producer_name')
+    #     sound_name = request.POST.get('sound_name')
+    #     lights_name = request.POST.get('lights_name')
+    #     costume_name = request.POST.get('costume_name')
+        
+    #     #get director_id
+    #     with connection.cursor() as cursor:
+    #         cursor.execute("""SELECT AngajatiSuportID 
+    #                           FROM AngajatiSuport 
+    #                           WHERE Nume = %s""", [play_name])
+    #         piesa_id = cursor.fetchone()
+
+
+        return redirect('/adauga-spectacole')
     
+    return render(request, 'shows.html')
+
+def delete_show(request):
+    if request.method == 'POST':
+        show_id = request.POST.get('show_id')
+        with connection.cursor() as cursor:
+            cursor.execute("""DELETE FROM Reprezentatii
+                              WHERE ReprezentatieID = %s;""", [show_id])
+        with connection.cursor() as cursor:
+            cursor.execute("""DELETE FROM SuportReprezentatii
+                              WHERE ReprezentatieID = %s;""", [show_id])
+
+
+        return redirect('/adauga-spectacole')  
+    return render(request, 'shows.html')

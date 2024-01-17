@@ -123,23 +123,23 @@
             <div class="row">
                 <nav class="navbar bg-body-light">
                     <div class="container-fluid justify-content-center align-items-center">
-                        <form class="d-flex" role="search" action="/adauga-actori/search" method="POST">
+                        <form class="d-flex" role="search" action="/adauga-spectacole/search" method="POST">
                             {% csrf_token %}
-                            <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search" name="search_name">
-                            <button class="btn btn-outline-primary" type="submit">Salveaza</button>
+                            <input class="form-control me-2" type="search" placeholder="Cauta" aria-label="Search" name="search_name">
+                            <button class="btn btn-outline-primary" type="submit">Cauta</button>
                           </form>
                     </div>
                 </nav>
             </div>
             <div class="row" style="margin-top: 20px;">
-                <p>{{actors|length}} spectacole in baza de date.</p>
+                <p>{{shows|length}} spectacole in baza de date.</p>
             </div>
             <div class="row" style="margin-top: 20px;">
                 <div class="container" style="overflow-y: auto;height: 400px;">
                     <table class="table table-hover">
                         <thead>
                             <tr>
-                                <td>Nume</td>
+                                <td>Piesa</td>
                                 <td>Autor</td>
                                 <td>Gen</td>
                                 <td>Regizor</td>
@@ -148,7 +148,7 @@
                                 <td>Sunet</td>
                                 <td>Lumini</td>
                                 <td>Costume</td>
-                                <td>Modificati sau stergeti</td>
+                                <td>Actiune</td>
                             </tr>
                         </thead>
                         <tbody>
@@ -163,7 +163,7 @@
                                     <td>{{show.Sunet}}</td>
                                     <td>{{show.Lumini}}</td>
                                     <td>{{show.Costume}}</td>
-                                    <td><button type="button" class="btn btn-primary actor-modal-button" data-toggle="modal" data-target="#updateActorsModal" data-actor-id="{{ actor.ID }}" data-actor-nume="{{ actor.Nume }}" data-actor-prenume="{{ actor.Prenume }}" data-actor-cnp="{{ actor.CNP }}" data-actor-telefon="{{ actor.Telefon }}" data-actor-email="{{ actor.Email }}" data-actor-studii="{{ actor.Studii }}">Modificati sau stergeti</button></td>
+                                    <td><button type="button" class="btn btn-primary show-modal-button" data-toggle="modal" data-target="#updateShowsModal" data-show-id="{{ show.ReprezentatieID }}" data-play-id="{{ show.PiesaID }}" data-show-nume="{{ show.Nume }}" data-show-autor="{{ show.Autor }}" data-show-gen="{{ show.Gen }}" data-show-regizor="{{ show.Regizor }}" data-show-scenograf="{{ show.Scenograf }}" data-show-producator="{{ show.Producator }}" data-show-sunet="{{ show.Sunet }}" data-show-lumini="{{ show.Lumini }}" data-show-costume="{{ show.Costume }}">Modificati sau stergeti</button></td>
                                 </tr>
                             {% endfor %}
                         </tbody>
@@ -174,54 +174,99 @@
     </div>
 </div>
 
-<div class="modal fade" id="updateActorsModal" tabindex="-1" role="dialog" aria-labelledby="updateActorsLabel" aria-hidden="true">
+<div class="modal fade" id="updateShowsModal" tabindex="-1" role="dialog" aria-labelledby="updateShowsLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="updateActorsLabel">Modificati sau stergeti</h5>
+          <h5 class="modal-title" id="updateShowsLabel">Modificati sau stergeti</h5>
           <button type="button" class="close" data-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>
         </div>
         <div class="modal-body">
-            <form id="actor-form" action="/adauga-actori/update" method="POST">
+            <form id="show-form" action="/adauga-spectacole/update" method="POST">
                 {% csrf_token %}
-                <input type="hidden" class="form-control" id="actor-id" name="actor_id">
+                <input type="hidden" class="form-control" id="show-id" name="show_id">
+                <input type="hidden" class="form-control" id="play-id" name="play_id">
                 <div class="form-group">
-                    <label for="recipient-name" class="col-form-label">Nume:</label>
-                    <input type="text" class="form-control" id="recipient-name" name="actor_name">
+                    <label for="show-recipient-name" class="col-form-label">Piesa:</label>
+                    <select class="form-control" id="show-recipient-name" name="play_name">
+                        {% for play in plays  %}
+                            <option value="{{ play.Nume }}">{{play.Nume}}</option>
+                        {% endfor %}
+                    </select>
                 </div>
                 <div class="form-group">
-                    <label for="recipient-firstname" class="col-form-label">Prenume:</label>
-                    <input type="text" class="form-control" id="recipient-firstname" name="actor_firstname">
+                    <label for="show-recipient-director" class="col-form-label">Regie:</label>
+                    <select class="form-control" id="show-recipient-director" name="director_name">
+                        {% for employee in employees  %}
+                        {% if employee.Functie == "Regizor" %}
+                        <option value="{{ employee.NumeComplet }}">{{employee.NumeComplet}}</option>
+                        {% endif %}
+                        {% endfor %}
+                    </select>
                 </div>
                 <div class="form-group">
-                    <label for="recipient-CNP" class="col-form-label">CNP:</label>
-                    <input type="text" class="form-control" id="recipient-CNP" name="actor_CNP">
+                    <label for="show-recipient-scenographer" class="col-form-label">Scenografie:</label>
+                    <select class="form-control" id="show-recipient-scenographer" name="scenographer_name">
+                        {% for employee in employees  %}
+                        {% if employee.Functie == "Scenograf" %}
+                        <option value="{{ employee.NumeComplet }}">{{employee.NumeComplet}}</option>
+                        {% endif %}
+                        {% endfor %}
+                        </select>
                 </div>
                 <div class="form-group">
-                    <label for="recipient-phone" class="col-form-label">Telefon:</label>
-                    <input type="text" class="form-control" id="recipient-phone" name="actor_phone">
+                    <label for="show-recipient-producer" class="col-form-label">Productie:</label>
+                    <select class="form-control"  id="show-recipient-producer" name="producer_name">
+                        {% for employee in employees  %}
+                        {% if employee.Functie == "Producator" %}
+                        <option value="{{ employee.NumeComplet }}">{{employee.NumeComplet}}</option>
+                        {% endif %}
+                        {% endfor %}
+                        </select>
                 </div>
                 <div class="form-group">
-                    <label for="recipient-email" class="col-form-label">E-mail:</label>
-                    <input type="text" class="form-control" id="recipient-email" name="actor_email">
+                    <label for="show-recipient-sound" class="col-form-label">Sunet:</label>
+                    <select class="form-control" id="show-recipient-sound" name="sound_name">
+                        {% for employee in employees  %}
+                        {% if employee.Functie == "Operator sunet" %}
+                        <option value="{{ employee.NumeComplet }}">{{employee.NumeComplet}}</option>
+                        {% endif %}
+                        {% endfor %}
+                        </select>
                 </div>
                 <div class="form-group">
-                    <label for="recipient-education" class="col-form-label">Studii:</label>
-                    <input type="text" class="form-control" id="recipient-education" name="actor_education">
+                    <label for="show-recipient-lights" class="col-form-label">Lumini:</label>
+                    <select class="form-control" id="show-recipient-lights" name="lights_name">
+                        {% for employee in employees  %}
+                        {% if employee.Functie == "Operator lumini" %}
+                        <option value="{{ employee.NumeComplet }}">{{employee.NumeComplet}}</option>
+                        {% endif %}
+                        {% endfor %}
+                        </select>
+                </div>
+                <div class="form-group">
+                    <label for="show-recipient-costume" class="col-form-label">Costume:</label>
+                    <select class="form-control" id="show-recipient-costume" name="costume_name">
+                        {% for employee in employees  %}
+                        {% if employee.Functie == "Costumier" %}
+                        <option value="{{ employee.NumeComplet }}">{{employee.NumeComplet}}</option>
+                        {% endif %}
+                        {% endfor %}
+                        </select>
                 </div>
                 <div class="modal-footer">
-                    <button class="btn btn-primary" type="submit" data-action="/adauga-actori/update">Adauga modificari</button>
-                    <button class="btn btn-secondary" type="submit" data-action="/adauga-actori/delete">Sterge</button>
+                    <button class="btn btn-primary" type="submit" data-action="/adauga-spectacole/update">Adauga modificari</button>
+                    <button class="btn btn-secondary" type="submit" data-action="/adauga-spectacole/delete">Sterge</button>
                     <button class="btn btn-secondary" type="button" data-dismiss="modal">Close</button>
 
                 </div>
             </form>
 
-            <form id="actor-form-delete" action="/adauga-actori/delete" method="POST">
+            <form id="show-form-delete" action="/adauga-spectacole/delete" method="POST">
                 {% csrf_token %}
-                <input type="hidden" class="form-control" id="actor-id-delete" name="actor_id">
+                <input type="hidden" class="form-control" id="show-id-delete" name="show_id">
             </form>
             
         </div>
@@ -231,43 +276,69 @@
 
   <script>
     $(document).ready(function () {
-        var refferingPage;
+        var referringPage;
         $('.actor-modal-button').on('click', function () {
-            refferingPage = window.location.href;
-            var actorId = $(this).data('actor-id');
-            var actorNume = $(this).data('actor-nume');
-            var actorPrenume = $(this).data('actor-prenume');
-            var actorCNP = $(this).data('actor-cnp');
-            var actorTelefon = $(this).data('actor-telefon');
-            var actorEmail = $(this).data('actor-email');
-            var actorStudii = $(this).data('actor-studii');
+            referringPage  = window.location.href;
+            var showId = $(this).data('show-id');
+            var playId = $(this).data('play-id');
+            var showNume = $(this).data('show-nume');
+            var showRegizor = $(this).data('show-regizor');
+            var showScenograf = $(this).data('show-scenograf');
+            var showProducator = $(this).data('show-producator');
+            var showSunet = $(this).data('show-sunet');
+            var showLumini = $(this).data('show-lumini');
+            var showCostume = $(this).data('show-costume');
             // Add similar lines for other actor attributes
 
             // Populate the form fields with actor data
-            $('#actor-id').val(actorId);
-            $('#recipient-name').val(actorNume);
-            $('#recipient-firstname').val(actorPrenume);
-            $('#recipient-CNP').val(actorCNP);
-            $('#recipient-phone').val(actorTelefon);
-            $('#recipient-email').val(actorEmail);
-            $('#recipient-education').val(actorStudii);
+            $('#show-id').val(actorId);
+            $('#play-id').val(playId);
+            $('#show-recipient-name').val(showNume);
+            $('#show-recipient-director').val(showRegizor);
+            $('#show-recipient-scenographer').val(showScenograf);
+            $('#show-recipient-producer').val(showProducator);
+            $('#show-recipient-sound').val(showSunet);
+            $('#show-recipient-lights').val(showLumini);
+            $('#show-recipient-costume').val(showCostume);
             // Add similar lines for other modal fields
 
+            // Update the dropdown options
+           // updateDropdownOptions('show-recipient-name', showNume);
+          //  updateDropdownOptions('show-recipient-director', showRegizor);
+          //  updateDropdownOptions('show-recipient-scenographer', showScenograf);
+          //  updateDropdownOptions('show-recipient-producer', showProducator);
+          //  updateDropdownOptions('show-recipient-sound', showSunet);
+          //  updateDropdownOptions('show-recipient-lights', showLumini);
+          //  updateDropdownOptions('show-recipient-costume', showCostume); 
 
             // Show the modal
-        $('#updateActorsModal').modal('show');
+        $('#updateShowsModal').modal('show');
         });
 
-        $('#updateActorsModal').on('hidden.bs.modal', function () {
+        $('#updateShowsModal').on('hidden.bs.modal', function () {
             // Navigate back to the previous page when the modal is closed
             history.replaceState(null, null, referringPage);
         });
             
-        $('#updateActorsModal').on('submit', '#actor-form', function () {
+        $('#updateActorsModal').on('submit', '#show-form', function () {
             // Submit the form to the appropriate URL based on the button clicked
             var action = $(this).find('button:focus').data('action');
             $(this).attr('action', action);
         });
+
+        //function updateDropdownOptions(dropdownId, currentValue) {
+        //    var dropdown = $('#' + dropdownId);
+      //      dropdown.empty();
+      //      dropdown.append('<option value="' + currentValue + '">' + currentValue + '</option>');
+     //       
+            // Add other options based on your original logic
+    //        {% for play in plays  %}
+    //            {% if play.Nume != currentValue %}
+     //               dropdown.append('<option value="{{ play.Nume }}">{{ play.Nume }}</option>');
+      //          {% endif %}
+      //      {% endfor %}
+      //  }
+
     });
 </script>
 

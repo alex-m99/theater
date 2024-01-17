@@ -15,7 +15,7 @@
     </div>
     <div class="row">
         <div class="col-md-4">
-            <div class="container" style="overflow-y:auto;height:450px;background: #CEECF5;">
+            <div class="container" style="overflow-y:auto;height:595px;background: #CEECF5;">
                 <form class="d-flex" action="/adauga-actori/add" method="POST">
                     {% csrf_token %}
                     <table class="table" style="margin-top: 20px;">
@@ -163,9 +163,9 @@
 
   <script>
     $(document).ready(function () {
-        var refferingPage;
+        var referringPage;
         $('.actor-modal-button').on('click', function () {
-            refferingPage = window.location.href;
+            referringPage = window.location.href;
             var actorId = $(this).data('actor-id');
             var actorNume = $(this).data('actor-nume');
             var actorPrenume = $(this).data('actor-prenume');

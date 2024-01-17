@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+{% extends "index.html" %}
+{% load static %}
+
+{% block main_content %}
+   
+<div class="container-flex text-center justify-content-center align-items-center" style="padding-top: 10px; padding-bottom: 20px; margin-top: 10px;vertical-align: middle;">
+    <div class="row justify-content-center align-middle" style="margin-top: 10px;height:60px;">
+        <div class="col-md-4 text-light" style="background:#4B088A;">
+            <h4 style="margin-top:15px">Adauga o piesa</h4>
+        </div>
+        <div class="col-md-8">
+            <h4>Cauta piese</h4>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-4">
+            <div class="container" style="overflow-y:auto;height:595px;background: #CEECF5;">
+                <form class="d-flex" action="/adauga-piese/add" method="POST">
+                    {% csrf_token %}
+                    <table class="table" style="margin-top: 20px;">
+                        <tr>
+                            <td style="text-align: left;vertical-align: middle; padding-left: 15px;">Nume</td>
+                            <td><input type="text" class="form-control" name="play_name"></td>
+                        </tr>  
+                        <tr>
+                            <td style="text-align: left;vertical-align: middle; padding-left: 15px;">Autor</td>
+                            <td><input type="text" class="form-control" name="play_author"></td>
+                        </tr> 
+                        <tr>
+                            <td style="text-align: left;vertical-align: middle; padding-left: 15px;">Gen Dramatic</td>
+                            <td><input type="text" class="form-control" name="play_genre"></td>
+                        </tr> 
+                        <tr>
+                            <td colspan="2"><button class="btn btn-primary" type="submit">Salveaza</button></td>
+                        </tr>
+                    </table>
+                </form>
+                {% comment "" %}
+                <ul style="text-align: left;vertical-align: middle;padding-left: 15px;">
+                    <li><small>Readers should not register multiple times</small></li>
+                    <li><small>Duplicate reader registrations will be deactivated</small></li>
+                    <li><small>Contact information provided above must be correct and subject to verification</small></li>
+                </ul>
+                {% endcomment %}
+            </div>
+        </div>
+        <div class="col-md-8">
+            <div class="row">
+                <nav class="navbar bg-body-light">
+                    <div class="container-fluid justify-content-center align-items-center">
+                        <form class="d-flex" role="search" action="/adauga-piese/search" method="POST">
+                            {% csrf_token %}
+                            <input class="form-control me-2" type="search" placeholder="Cauta" aria-label="Search" name="search_name">
+                            <button class="btn btn-outline-primary" type="submit">Cauta</button>
+                          </form>
+                    </div>
+                </nav>
+            </div>
+            <div class="row" style="margin-top: 20px;">
+                <p>{{plays|length}} piese in baza de date.</p>
+            </div>
+            <div class="row" style="margin-top: 20px;">
+                <div class="container" style="overflow-y: auto;height: 400px;">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <td>Nume</td>
+                                <td>Autor</td>
+                                <td>Gen dramatic</td>
+                                <td>Actiune</td>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for play in plays  %}
+                                <tr>
+                                    <td>{{play.Nume}}</td>
+                                    <td>{{play.Autor}}</td>
+                                    <td>{{play.GenDramatic}}</td>
+                                    <td><button type="button" class="btn btn-primary play-modal-button" data-toggle="modal" data-target="#updatePlaysModal" data-play-id="{{ play.ID }}" data-play-nume="{{ play.Nume }}" data-play-autor="{{ play.Autor }}" data-play-gen="{{ play.GenDramatic }}">Modificati sau stergeti</button></td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="updatePlaysModal" tabindex="-1" role="dialog" aria-labelledby="updatePlaysLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="updatePlaysLabel">Modificati sau stergeti</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+            <form id="actor-form" action="/adauga-piese/update" method="POST">
+                {% csrf_token %}
+                <input type="hidden" class="form-control" id="play-id" name="play_id">
+                <div class="form-group">
+                    <label for="play-recipient-name" class="col-form-label">Nume:</label>
+                    <input type="text" class="form-control" id="play-recipient-name" name="play_name">
+                </div>
+                <div class="form-group">
+                    <label for="play-recipient-author" class="col-form-label">Autor:</label>
+                    <input type="text" class="form-control" id="play-recipient-author" name="play_author">
+                </div>
+                <div class="form-group">
+                    <label for="play-recipient-genre" class="col-form-label">Gen dramatic:</label>
+                    <input type="text" class="form-control" id="play-recipient-genre" name="play_genre">
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-primary" type="submit" data-action="/adauga-piese/update">Adauga modificari</button>
+                    <button class="btn btn-secondary" type="submit" data-action="/adauga-piese/delete">Sterge</button>
+                    <button class="btn btn-secondary" type="button" data-dismiss="modal">Inchide</button>
+
+                </div>
+            </form>
+
+            <form id="play-form-delete" action="/adauga-piese/delete" method="POST">
+                {% csrf_token %}
+                <input type="hidden" class="form-control" id="play-id-delete" name="play_id">
+            </form>
+            
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    $(document).ready(function () {
+        var referringPage;
+        $('.play-modal-button').on('click', function () {
+            referringPage = window.location.href;
+            var playId = $(this).data('play-id');
+            var playNume = $(this).data('play-nume');
+            var playAutor = $(this).data('play-autor');
+            var playGen = $(this).data('play-gen');
+            // Add similar lines for other actor attributes
+
+            // Populate the form fields with actor data
+            $('#play-id').val(playId);
+            $('#play-recipient-name').val(playNume);
+            $('#play-recipient-author').val(playAutor);
+            $('#play-recipient-genre').val(playGen);
+            // Add similar lines for other modal fields
+
+
+            // Show the modal
+        $('#updatePlaysModal').modal('show');
+        });
+
+        $('#updatePlaysModal').on('hidden.bs.modal', function () {
+            // Navigate back to the previous page when the modal is closed
+            history.replaceState(null, null, referringPage);
+        });
+            
+        $('#updatePlaysModal').on('submit', '#actor-form', function () {
+            // Submit the form to the appropriate URL based on the button clicked
+            var action = $(this).find('button:focus').data('action');
+            $(this).attr('action', action);
+        });
+    });
+</script>
+
+ {% endblock main_content %}

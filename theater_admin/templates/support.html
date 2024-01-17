@@ -15,7 +15,7 @@
     </div>
     <div class="row">
         <div class="col-md-4">
-            <div class="container" style="overflow-y:auto;height:450px;background: #CEECF5;">
+            <div class="container" style="overflow-y:auto;height:595px;background: #CEECF5;">
                 <form class="d-flex" action="/adauga-suport/add" method="POST">
                     {% csrf_token %}
                     <table class="table" style="margin-top: 20px;">
@@ -71,7 +71,7 @@
                 </nav>
             </div>
             <div class="row" style="margin-top: 20px;">
-                <p>{{actors|length}} actori in baza de date.</p>
+                <p>{{support|length}} angajati in baza de date.</p>
             </div>
             <div class="row" style="margin-top: 20px;">
                 <div class="container" style="overflow-y: auto;height: 400px;">
@@ -96,7 +96,7 @@
                                     <td>{{employee.Telefon}}</td>
                                     <td>{{employee.Email}}</td>
                                     <td>{{employee.Functie}}</td>
-                                    <td><button type="button" class="btn btn-primary actor-modal-button" data-toggle="modal" data-target="#updateActorsModal" data-actor-id="{{ actor.ID }}" data-actor-nume="{{ actor.Nume }}" data-actor-prenume="{{ actor.Prenume }}" data-actor-cnp="{{ actor.CNP }}" data-actor-telefon="{{ actor.Telefon }}" data-actor-email="{{ actor.Email }}" data-actor-studii="{{ actor.Studii }}">Modificati sau stergeti</button></td>
+                                    <td><button type="button" class="btn btn-primary support-modal-button" data-toggle="modal" data-target="#updateSupportModal" data-support-id="{{ employee.ID }}" data-support-nume="{{ employee.Nume }}" data-support-prenume="{{ employee.Prenume }}" data-support-cnp="{{ employee.CNP }}" data-support-telefon="{{ employee.Telefon }}" data-support-email="{{ employee.Email }}" data-support-functie="{{ employee.Functie }}">Modificati sau stergeti</button></td>
                                 </tr>
                             {% endfor %}
                         </tbody>
@@ -107,11 +107,11 @@
     </div>
 </div>
 
-<div class="modal fade" id="updateSupportModal" tabindex="-1" role="dialog" aria-labelledby="updateActorsLabel" aria-hidden="true">
+<div class="modal fade" id="updateSupportModal" tabindex="-1" role="dialog" aria-labelledby="updateSupportLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="updateActorsLabel">Modificati sau stergeti</h5>
+          <h5 class="modal-title" id="updateSupportLabel">Modificati sau stergeti</h5>
           <button type="button" class="close" data-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>
@@ -121,28 +121,28 @@
                 {% csrf_token %}
                 <input type="hidden" class="form-control" id="support-id" name="support_id">
                 <div class="form-group">
-                    <label for="recipient-name" class="col-form-label">Nume:</label>
-                    <input type="text" class="form-control" id="recipient-name" name="suport_name">
+                    <label for="support-recipient-name" class="col-form-label">Nume:</label>
+                    <input type="text" class="form-control" id="support-recipient-name" name="suport_name">
                 </div>
                 <div class="form-group">
-                    <label for="recipient-firstname" class="col-form-label">Prenume:</label>
-                    <input type="text" class="form-control" id="recipient-firstname" name="support_firstname">
+                    <label for="support-recipient-firstname" class="col-form-label">Prenume:</label>
+                    <input type="text" class="form-control" id="support-recipient-firstname" name="support_firstname">
                 </div>
                 <div class="form-group">
-                    <label for="recipient-CNP" class="col-form-label">CNP:</label>
-                    <input type="text" class="form-control" id="recipient-CNP" name="support_CNP">
+                    <label for="support-recipient-CNP" class="col-form-label">CNP:</label>
+                    <input type="text" class="form-control" id="support-recipient-CNP" name="support_CNP">
                 </div>
                 <div class="form-group">
-                    <label for="recipient-phone" class="col-form-label">Telefon:</label>
-                    <input type="text" class="form-control" id="recipient-phone" name="support_phone">
+                    <label for="support-recipient-phone" class="col-form-label">Telefon:</label>
+                    <input type="text" class="form-control" id="support-recipient-phone" name="support_phone">
                 </div>
                 <div class="form-group">
-                    <label for="recipient-email" class="col-form-label">E-mail:</label>
-                    <input type="text" class="form-control" id="recipient-email" name="support_email">
+                    <label for="support-recipient-email" class="col-form-label">E-mail:</label>
+                    <input type="text" class="form-control" id="support-recipient-email" name="support_email">
                 </div>
                 <div class="form-group">
-                    <label for="recipient-education" class="col-form-label">Functie:</label>
-                    <input type="text" class="form-control" id="recipient-education" name="support_job">
+                    <label for="support-recipient-job" class="col-form-label">Functie:</label>
+                    <input type="text" class="form-control" id="support-recipient-job" name="support_job">
                 </div>
                 <div class="modal-footer">
                     <button class="btn btn-primary" type="submit" data-action="/adauga-suport/update">Adauga modificari</button>
@@ -164,9 +164,9 @@
 
   <script>
     $(document).ready(function () {
-        var refferingPage;
+        var referringPage;
         $('.support-modal-button').on('click', function () {
-            refferingPage = window.location.href;
+            referringPage = window.location.href;
             var supportId = $(this).data('support-id');
             var supportNume = $(this).data('support-nume');
             var supportPrenume = $(this).data('support-prenume');
@@ -178,14 +178,15 @@
 
             // Populate the form fields with actor data
             $('#support-id').val(supportId);
-            $('#recipient-name').val(supportNume);
-            $('#recipient-firstname').val(supportPrenume);
-            $('#recipient-CNP').val(supportCNP);
-            $('#recipient-phone').val(supportTelefon);
-            $('#recipient-email').val(supportEmail);
-            $('#recipient-education').val(supportFunctie);
+            $('#support-recipient-name').val(supportNume);
+            $('#support-recipient-firstname').val(supportPrenume);
+            $('#support-recipient-CNP').val(supportCNP);
+            $('#support-recipient-phone').val(supportTelefon);
+            $('#support-recipient-email').val(supportEmail);
+            $('#support-recipient-job').val(supportFunctie);
             // Add similar lines for other modal fields
-
+            
+            console.log(supportId, supportNume, supportPrenume, supportCNP, supportTelefon, supportEmail, supportFunctie);
 
             // Show the modal
         $('#updateSupportModal').modal('show');

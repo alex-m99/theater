@@ -88,8 +88,8 @@ DATABASES = {
     'default': {
         'ENGINE': 'sql_server.pyodbc',
         'NAME': 'Teatru',
-        #'HOST': 'DESKTOP-0L2GG1F\SQLEXPRESS',  # for PC
-        'HOST': 'DESKTOP-MEBND7I\SQLEXPRESS', # for laptop
+        'HOST': 'DESKTOP-0L2GG1F\SQLEXPRESS',  # for PC
+        #'HOST': 'DESKTOP-MEBND7I\SQLEXPRESS', # for laptop
         'PORT': '',  # Usually, it's 1433 for SQL Server
         'OPTIONS': {
             'driver': 'ODBC Driver 11 for SQL Server',  # Use the appropriate ODBC driver

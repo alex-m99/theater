@@ -62,3 +62,42 @@ def actor_detail(request, name):
             "actor": identified_actor,
             "description": actor_description
         })
+    
+def get_spectacole(request, name):
+    with connection.cursor() as cursor:
+        # cursor.execute("""SELECT 
+        #                     A.Nume, 
+        #                     A.Prenume, 
+        #                     STUFF((
+        #                         SELECT ', ' + AR.Rol
+        #                         FROM AngajatiActori AA
+        #                         INNER JOIN ActoriReprezentatii AR ON AA.AngajatiActoriID = AR.AngajatiActoriID
+        #                         WHERE A.AngajatID = AA.AngajatID
+        #                         FOR XML PATH(''), TYPE
+        #                     ).value('.', 'NVARCHAR(MAX)'), 1, 2, '') AS CombinedRoles
+        #                   FROM Angajati A; """)
+
+        cursor.execute("""SELECT 
+                          AA.AngajatiActoriID,
+                          A.Nume, 
+                          A.Prenume, 
+                          STUFF((
+                          SELECT ', ' + AR.Rol
+                          FROM AngajatiActori AA
+                          INNER JOIN ActoriReprezentatii AR ON AA.AngajatiActoriID = AR.AngajatiActoriID
+                          WHERE A.AngajatID = AA.AngajatID
+                          FOR XML PATH(''), TYPE
+                          ).value('.', 'NVARCHAR(MAX)'), 1, 2, '') AS CombinedRoles,
+                          AA.StudiiDomeniu
+                         FROM Angajati A
+                         INNER JOIN AngajatiActori AA ON A.AngajatID = AA.AngajatID; """)
+        actori = cursor.fetchall()
+        actori_dicts = [{ 'ID':actor[0], 'Nume': actor[1], 'Prenume': actor[2], 'Rol': actor[3], 'Studii': actor[4]} for actor in actori]
+        photos = {
+           "Ionescu": "ionescu-maria.jpg", 
+           "Florescu": "florescu-adrian.jpg", 
+           "Radulescu": "radulescu-daniel.jpg"
+            }
+        return render(request, "theater/actori.html", {
+            "actori": actori_dicts
+        })

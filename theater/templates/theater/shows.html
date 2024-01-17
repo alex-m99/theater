@@ -1,0 +1,87 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+  Spectacole
+{% endblock %}
+
+{% block css_files %}
+  <link rel="stylesheet" href="{% static 'theater/app.css' %}" />
+  {% comment %} <link rel="stylesheet" href="{% static 'blog/index.css' %}" /> {% endcomment %}
+{% endblock %}
+
+{% block content %}
+
+  <ul class="actors_list">
+      {% for actor in actori %} 
+     {% comment "" %}
+      <a href="{% url "actori-detail-page" actor.Nume %}">
+       {% endcomment %}
+        
+       <a href="{% url 'actori-detail-page' name=actor.Nume|slugify|add:'-'|add:actor.Prenume|slugify %}">
+       
+      <li class="actors_item">
+       
+        {% if actor.Nume == 'Ionescu' and actor.Prenume == 'Maria'%}
+        <img src="{% static "theater/images/"|add:actor.Nume|add:".jpg" %}" alt= "Description of the image" />
+        {% comment "" %}
+        {% else %}
+        <img src="{% static "theater/images/Radulescu.jpg" %}" alt="Description of the image" />
+        {% endif %}
+         {% endcomment %}
+         {% else %}
+       
+        <img src="{% static 'theater/images/actors/' %}{{ actor.ID }}.jpg" alt="Description of the image" />
+      
+        {% endif %}
+        <div class="details">
+          <h1>{{actor.Nume}} {{ actor.Prenume }}</h1>
+          {% if actor.Rol %}
+          <h2>Roluri: {{actor.Rol}}</h2>
+          {% else %}
+          <h2>Acest actor nu are roluri momentan</h2>
+          {% endif %}
+          <h3>Studii: {{actor.Studii}}</h3>
+        </div>
+      </li>
+      </a>
+      {% endfor %} 
+    </ul>
+
+{% comment %} <ul class="actors_list">
+  {% for actor in actori %} 
+  {% if actor.Rol %}
+  <a href="{% url "actori-detail-page" actor.Nume %}">
+  <li class="actors_item">
+    <img src="{% static "theater/images/"|add:actor.Nume|add:".jpg" %}" alt= "Description of the image" />
+    <div class="details">
+      <h1>{{actor.Nume}} {{ actor.Prenume }}</h1>
+      
+      <h2>Roluri: {{actor.Rol}}</h2>
+      <h3>Additional Info</h3>
+    </div>
+  </li>
+  </a>
+  {% endif %}
+  {% endfor %} 
+
+
+  {% for actor in actori %} 
+  {% if actor.Rol is null%}
+  <a href="{% url "actori-detail-page" actor.Nume %}">
+  <li class="actors_item">
+    <img src="{% static "theater/images/Radulescu.jpg" %}" alt="Description of the image" />
+    <div class="details">
+      <h1>{{actor.Nume}} {{ actor.Prenume }}</h1>
+      <h2>Acest actor nu are roluri momentan</h2>
+      <h3>Additional Info</h3>
+    </div>
+  </li>
+</a> 
+  {% endif %}
+  {% endfor %} 
+ 
+</ul>
+ {% endcomment %}
+
+{% endblock %}
